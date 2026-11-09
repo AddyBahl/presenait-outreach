@@ -32,6 +32,13 @@
   nav button.on { background: var(--ink); color: #fff; }
   nav button .count { margin-left: 6px; font-size: 12px; background: var(--grey-soft); color: var(--ink); border-radius: 999px; padding: 1px 8px; }
   nav button.on .count { background: rgba(255,255,255,.18); color: #fff; }
+  @media (max-width: 900px) {
+    header { position: static; }
+    .bar { gap: 10px; }
+    nav { order: 3; width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+    nav button { white-space: nowrap; flex: 0 0 auto; }
+    .wrap { padding: 0 16px 60px; }
+  }
 
   /* pills */
   .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600; white-space: nowrap; }
@@ -399,10 +406,10 @@ async function loadMeta() {
   const m = S.meta;
   const kp = $("keypill");
   kp.className = "pill " + (m.api_key ? "green" : "red");
-  kp.innerHTML = `<span class="dot"></span>${m.api_key ? "AI connected" : "Add API key"}`;
+  kp.innerHTML = `<span class="dot"></span>${window.PRESENAIT_DEMO ? "Demo mode" : m.api_key ? "AI connected" : "Add API key"}`;
   kp.style.cursor = m.api_key ? "default" : "pointer";
   kp.onclick = m.api_key ? null : () => showTab("settings");
-  $("key-status").textContent = m.api_key ? "A key is saved and ready to use." : "No key yet. The Find and Write buttons need one.";
+  $("key-status").textContent = window.PRESENAIT_DEMO ? "Not needed in the demo. Download the app to use your own key." : m.api_key ? "A key is saved and ready to use." : "No key yet. The Find and Write buttons need one.";
   $("spent").textContent = money(m.session_spend);
   $("c-pending").textContent = m.pending;
   $("w-pending").textContent = m.pending;

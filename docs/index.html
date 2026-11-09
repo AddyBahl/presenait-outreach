@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PresenAIT Outreach (demo)</title>
+<style>
+  :root {
+    --bg: #FBF6EC; --card: #FFFFFF; --ink: #15171A; --muted: #6E747E; --line: #E2DED6;
+    --orange: #E8913A; --yellow: #F6C945; --yellow-hover: #EDBB2E;
+    --green: #2F7D55; --green-soft: #E1F1E7; --amber: #B8741A; --amber-soft: #FCEED6;
+    --red: #CD4B46; --red-soft: #F8E1DF; --grey-soft: #EFEDE8; --shadow: 0 1px 2px rgba(21,23,26,.04), 0 6px 20px rgba(21,23,26,.05);
+    --font: "Avenir Next", Avenir, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: Menlo, ui-monospace, "SF Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.45; }
+  a { color: var(--ink); }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* header */
+  header { position: sticky; top: 0; z-index: 10; background: rgba(251,246,236,.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+  .bar { max-width: 1240px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .brand { font-weight: 800; font-size: 24px; letter-spacing: -.3px; }
+  .brand b { color: var(--orange); font-weight: 800; }
+  .tag { font-family: var(--mono); font-size: 12px; color: var(--orange); letter-spacing: 1px; }
+  .spacer { flex: 1; }
+  nav { display: flex; gap: 6px; flex-wrap: wrap; }
+  nav button { border: 0; background: transparent; padding: 8px 14px; border-radius: 999px; cursor: pointer; font-weight: 600; color: var(--muted); }
+  nav button .n { font-family: var(--mono); font-size: 12px; color: var(--orange); margin-right: 6px; }
+  nav button.on { background: var(--ink); color: #fff; }
+  nav button .count { margin-left: 6px; font-size: 12px; background: var(--grey-soft); color: var(--ink); border-radius: 999px; padding: 1px 8px; }
+  nav button.on .count { background: rgba(255,255,255,.18); color: #fff; }
+  @media (max-width: 900px) {
+    header { position: static; }
+    .bar { gap: 10px; }
+    nav { order: 3; width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+    nav button { white-space: nowrap; flex: 0 0 auto; }
+    .wrap { padding: 0 16px 60px; }
+  }
+
+  /* pills */
+  .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .pill.green { background: var(--green-soft); color: var(--green); }
+  .pill.amber { background: var(--amber-soft); color: var(--amber); }
+  .pill.red { background: var(--red-soft); color: var(--red); }
+  .pill.grey { background: var(--grey-soft); color: var(--muted); }
+  .pill.yellow { background: var(--yellow); color: var(--ink); }
+  .pill.ink { background: var(--ink); color: #fff; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+  /* page intro, like the video captions */
+  .intro { display: grid; grid-template-columns: 1fr; gap: 6px; margin: 36px 0 22px; }
+  .intro .num { font-family: var(--mono); color: var(--orange); font-size: 14px; }
+  .intro h1 { margin: 0; font-size: 40px; line-height: 1.1; letter-spacing: -.5px; }
+  .intro p { margin: 6px 0 0; color: var(--muted); font-size: 17px; max-width: 760px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 18px; }
+  .card h2 { margin: 0 0 14px; font-size: 20px; }
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g4 { grid-template-columns: 2fr 2fr 1fr 1.3fr; }
+  @media (max-width: 860px) { .g2, .g4 { grid-template-columns: 1fr; } .intro h1 { font-size: 32px; } }
+
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+  input[type=text], input[type=email], input[type=number], input[type=password], select, textarea {
+    width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 10px 12px; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(232,145,58,.18); }
+  textarea { resize: vertical; min-height: 90px; line-height: 1.45; }
+  .seg { display: inline-flex; background: var(--grey-soft); border-radius: 999px; padding: 4px; gap: 4px; }
+  .seg button { border: 0; background: transparent; padding: 8px 16px; border-radius: 999px; cursor: pointer; font-weight: 600; color: var(--muted); }
+  .seg button.on { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+
+  .btn { border: 0; border-radius: 999px; padding: 11px 22px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+  .btn.primary { background: var(--yellow); color: var(--ink); }
+  .btn.primary:hover { background: var(--yellow-hover); }
+  .btn.dark { background: var(--ink); color: #fff; }
+  .btn.green { background: var(--green); color: #fff; }
+  .btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+  .btn.ghost:hover { border-color: var(--ink); }
+  .btn.small { padding: 6px 14px; font-size: 13px; }
+  .btn:disabled, .btn.disabled { opacity: .45; cursor: not-allowed; pointer-events: none; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .note { background: var(--amber-soft); border-radius: 16px; padding: 14px 18px; color: #6b4a12; font-size: 14px; }
+  .note.green { background: var(--green-soft); color: #1f5a3c; }
+  .note b { color: inherit; }
+
+  /* tables */
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 600; padding: 10px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td .name { font-weight: 700; }
+  td.biz { min-width: 220px; }
+  td .clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  td .sub { color: var(--muted); font-size: 13px; }
+  td input[type=text], td input[type=email] { padding: 7px 10px; border-radius: 10px; min-width: 150px; font-size: 14px; }
+  .links a { display: inline-block; font-size: 13px; margin-right: 10px; white-space: nowrap; }
+  .x { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; padding: 4px 8px; border-radius: 8px; }
+  .x:hover { background: var(--red-soft); color: var(--red); }
+  .empty { text-align: center; padding: 40px 10px; color: var(--muted); }
+
+  /* job progress */
+  .progress { height: 10px; background: var(--grey-soft); border-radius: 999px; overflow: hidden; }
+  .progress > div { height: 100%; background: var(--green); border-radius: 999px; transition: width .4s ease; }
+  .log { font-family: var(--mono); font-size: 12.5px; background: #15171A; color: #d9dbe0; border-radius: 14px; padding: 14px 16px; max-height: 260px; overflow: auto; white-space: pre-wrap; margin-top: 14px; }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(21,23,26,.2); border-top-color: var(--ink); border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* drafts */
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 14px; cursor: pointer; font-weight: 600; font-size: 14px; }
+  .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .draft { padding: 0; overflow: hidden; }
+  .dhead { display: flex; gap: 14px; align-items: center; padding: 18px 22px; cursor: pointer; flex-wrap: wrap; }
+  .dhead h3 { margin: 0; font-size: 19px; }
+  .fit { display: inline-flex; gap: 4px; }
+  .fit i { width: 10px; height: 10px; border-radius: 50%; background: var(--grey-soft); }
+  .fit i.on { background: var(--green); }
+  .dbody { border-top: 1px solid var(--line); padding: 20px 22px; display: grid; grid-template-columns: 1fr 1.6fr; gap: 26px; }
+  @media (max-width: 960px) { .dbody { grid-template-columns: 1fr; } }
+  .field { margin-bottom: 14px; }
+  .field .row { justify-content: space-between; margin-bottom: 6px; }
+  .field label { margin: 0; }
+  .facts p { margin: 0 0 12px; }
+  .facts h4 { margin: 0 0 4px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+  details summary { cursor: pointer; color: var(--muted); font-weight: 600; font-size: 14px; }
+  details pre { white-space: pre-wrap; font-family: var(--font); font-size: 13.5px; background: var(--bg); border-radius: 12px; padding: 12px; }
+  .chev { margin-left: auto; color: var(--muted); transition: transform .2s; }
+  .open .chev { transform: rotate(180deg); }
+
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 999px; opacity: 0; transition: all .25s; font-weight: 600; z-index: 50; pointer-events: none; }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .hidden { display: none !important; }
+</style>
+<script src="demo.js"></script>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div>
+      <div class="brand">Presen<b>AIT</b></div>
+      <div class="tag">OUTREACH AGENT</div>
+    </div>
+    <nav id="nav">
+      <button data-tab="find"><span class="n">01</span>Find businesses</button>
+      <button data-tab="prospects"><span class="n">02</span>Prospects<span class="count" id="c-prospects">0</span></button>
+      <button data-tab="write"><span class="n">03</span>Write drafts<span class="count" id="c-pending">0</span></button>
+      <button data-tab="drafts"><span class="n">04</span>Drafts<span class="count" id="c-drafts">0</span></button>
+      <button data-tab="settings">Settings</button>
+    </nav>
+    <div class="spacer"></div>
+    <span id="keypill" class="pill grey"><span class="dot"></span>Checking...</span>
+    <span class="pill grey" title="Estimated Anthropic spend since the dashboard started">Spent <b id="spent">$0.00</b></span>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- 01 FIND -->
+<section id="tab-find" class="tab">
+  <div class="intro">
+    <div class="num">01</div>
+    <h1>Find businesses</h1>
+    <p>Search the web for businesses by type and area. You get each one's website, phone number and contact page, ready to add to your prospect list.</p>
+  </div>
+  <div class="card">
+    <div class="row" style="margin-bottom:18px">
+      <div class="seg" id="find-type">
+        <button data-v="client" class="on">Clients</button>
+        <button data-v="partner">Shopping centres (partners)</button>
+      </div>
+    </div>
+    <div class="grid g4">
+      <div id="industry-box">
+        <label for="f-industry">Type of business</label>
+        <input id="f-industry" type="text" list="industries" placeholder="e.g. Commercial cleaning">
+        <datalist id="industries">
+          <option>Cafe / hospitality</option><option>Restaurant</option><option>Commercial cleaning</option>
+          <option>Security services</option><option>NDIS provider</option><option>Aged / home care</option>
+          <option>Childcare centre</option><option>Retail store</option><option>Gym / fitness</option>
+          <option>Trades / construction</option><option>Warehouse / logistics</option><option>Labour hire</option>
+          <option>Smash repairs / auto</option><option>Medical / dental clinic</option>
+        </datalist>
+      </div>
+      <div>
+        <label for="f-location">Area</label>
+        <input id="f-location" type="text" placeholder="e.g. Werribee VIC">
+      </div>
+      <div>
+        <label for="f-count">How many</label>
+        <select id="f-count"><option>5</option><option selected>10</option><option>15</option><option>20</option></select>
+      </div>
+      <div>
+        <label for="f-model">AI model</label>
+        <select id="f-model" class="model-select"></select>
+      </div>
+    </div>
+    <div class="row" style="margin-top:20px">
+      <button class="btn primary" id="btn-find">Find businesses</button>
+      <span class="muted small" id="find-est"></span>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Why no email addresses?</b> Australia's Spam Act 2003 bans software that searches the web for email addresses and collects them. So the finder brings back each business's <b>contact page</b>. Open it, and if an email is published for the right role (owner, operations, HR), paste it into the Prospects tab yourself. You can also call, use their contact form, or message them on LinkedIn.
+  </div>
+
+  <div class="card hidden" id="find-job" style="margin-top:18px">
+    <div class="row"><div class="spinner" id="find-spin"></div><b id="find-status">Searching...</b><span class="spacer"></span><span class="muted small" id="find-spend"></span></div>
+    <div class="log" id="find-log"></div>
+  </div>
+
+  <div class="card hidden" id="find-results" style="margin-top:18px">
+    <div class="row" style="margin-bottom:10px">
+      <h2 style="margin:0">Results</h2><span class="muted small" id="found-count"></span>
+      <span class="spacer"></span>
+      <button class="btn ghost small" id="btn-clear-found">Clear</button>
+      <button class="btn green" id="btn-add-found">Add to prospects</button>
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr><th></th><th>Business</th><th>Area</th><th>Phone</th><th>Size</th><th>Why it fits</th><th>Links</th></tr></thead>
+      <tbody id="found-body"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 02 PROSPECTS -->
+<section id="tab-prospects" class="tab hidden">
+  <div class="intro">
+    <div class="num">02</div>
+    <h1>Prospects</h1>
+    <p>Everyone you plan to contact. Open each contact page, add the email if it's published for that role, and add a contact name if you know it. Changes save automatically.</p>
+  </div>
+  <div class="card">
+    <div class="row" style="margin-bottom:14px">
+      <input id="p-search" type="text" placeholder="Search prospects" style="max-width:280px">
+      <span class="spacer"></span>
+      <button class="btn ghost small" id="btn-show-add">+ Add a business</button>
+    </div>
+    <div id="add-form" class="hidden" style="background:var(--bg);border-radius:16px;padding:16px;margin-bottom:16px">
+      <div class="grid g2">
+        <div><label>Business name *</label><input type="text" id="a-company"></div>
+        <div><label>Website</label><input type="text" id="a-website" placeholder="example.com.au"></div>
+        <div><label>Suburb and state</label><input type="text" id="a-suburb" placeholder="Werribee VIC"></div>
+        <div><label>Industry</label><input type="text" id="a-industry" list="industries"></div>
+        <div><label>Contact name</label><input type="text" id="a-name"></div>
+        <div><label>Contact role</label><input type="text" id="a-role" placeholder="Owner"></div>
+        <div><label>Email (published for this role)</label><input type="email" id="a-email"></div>
+        <div><label>Phone</label><input type="text" id="a-phone"></div>
+        <div><label>Type</label><select id="a-type"><option value="client">Client</option><option value="partner">Shopping centre (partner)</option></select></div>
+      </div>
+      <div class="row" style="margin-top:14px"><button class="btn primary small" id="btn-add-one">Add</button><button class="btn ghost small" id="btn-cancel-add">Cancel</button></div>
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Type</th><th>Business</th><th>Contact</th><th>Email</th><th>Phone</th><th>Links</th><th>Draft</th><th></th></tr></thead>
+      <tbody id="p-body"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 03 WRITE -->
+<section id="tab-write" class="tab hidden">
+  <div class="intro">
+    <div class="num">03</div>
+    <h1>Write drafts</h1>
+    <p>The agent researches each prospect online, then writes an email, a follow-up, a LinkedIn message and a phone opener. Nothing is ever sent.</p>
+  </div>
+  <div class="card">
+    <h2><span id="w-pending">0</span> prospects are waiting for drafts</h2>
+    <div class="grid g4">
+      <div><label for="w-limit">How many this run</label><input id="w-limit" type="number" min="1" value="5"></div>
+      <div><label for="w-budget">Spending limit (US$)</label><input id="w-budget" type="number" min="0.5" step="0.5" value="5"></div>
+      <div><label for="w-model">AI model</label><select id="w-model" class="model-select"></select></div>
+      <div style="display:flex;align-items:flex-end"><span class="muted small" id="w-est"></span></div>
+    </div>
+    <div class="note hidden" id="w-sender-warn" style="margin-top:16px">Your name and email aren't set yet, so drafts will be signed "[Your name]". <a href="#" data-goto="settings">Add them in Settings</a>.</div>
+    <div class="row" style="margin-top:20px">
+      <button class="btn primary" id="btn-run">Write drafts</button>
+      <button class="btn ghost hidden" id="btn-stop">Stop</button>
+    </div>
+  </div>
+  <div class="card hidden" id="w-job">
+    <div class="row" style="margin-bottom:12px"><div class="spinner" id="w-spin"></div><b id="w-status">Working...</b><span class="spacer"></span><span class="muted small" id="w-spend"></span></div>
+    <div class="progress"><div id="w-bar" style="width:0%"></div></div>
+    <div class="log" id="w-log"></div>
+  </div>
+</section>
+
+<!-- 04 DRAFTS -->
+<section id="tab-drafts" class="tab hidden">
+  <div class="intro">
+    <div class="num">04</div>
+    <h1>Drafts</h1>
+    <p>Best fit first. Check every fact, edit if needed, then copy or open in your mail app and send it yourself. Mark each one so you know where you're up to.</p>
+  </div>
+  <div class="row" style="margin-bottom:6px">
+    <div class="chips" id="d-chips"></div>
+    <span class="spacer"></span>
+    <input id="d-search" type="text" placeholder="Search drafts" style="max-width:240px;margin-bottom:16px">
+  </div>
+  <div id="d-list"></div>
+</section>
+
+<!-- SETTINGS -->
+<section id="tab-settings" class="tab hidden">
+  <div class="intro">
+    <div class="num">SETTINGS</div>
+    <h1>Settings</h1>
+    <p>Your API key, your signature, and the agent's defaults.</p>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h2>Anthropic API key</h2>
+      <p class="muted small" id="key-status"></p>
+      <label for="s-key">Paste your key</label>
+      <input id="s-key" type="password" placeholder="sk-ant-..." autocomplete="off">
+      <div class="row" style="margin-top:12px">
+        <button class="btn primary small" id="btn-save-key">Save key</button>
+        <button class="btn ghost small" id="btn-remove-key">Remove key</button>
+      </div>
+      <p class="muted small" style="margin-top:14px">Get a key at console.anthropic.com → API keys, and add some prepaid credit (for example US$10). The key is saved only on this computer, in a hidden file called <code>.env</code> next to <code>app.py</code>. Never share or upload that file.</p>
+    </div>
+    <div class="card">
+      <h2>Your signature</h2>
+      <div class="field"><label for="s-name">Your name</label><input id="s-name" type="text"></div>
+      <div class="field"><label for="s-title">Your title</label><input id="s-title" type="text" placeholder="Founder"></div>
+      <div class="field"><label for="s-email">Your email</label><input id="s-email" type="email"></div>
+      <p class="muted small">Added to every email with an unsubscribe line, as the Spam Act requires.</p>
+    </div>
+    <div class="card">
+      <h2>Agent defaults</h2>
+      <div class="grid g2">
+        <div><label for="s-model">AI model</label><select id="s-model" class="model-select"></select></div>
+        <div><label for="s-budget">Spending limit per run (US$)</label><input id="s-budget" type="number" min="0.5" step="0.5"></div>
+        <div><label for="s-searches">Web searches per business</label><select id="s-searches"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+        <div><label for="s-effort">AI effort</label><select id="s-effort"><option value="low">Low (cheapest)</option><option value="medium">Medium</option><option value="high">High</option></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Shopping centre referral offer</h2>
+      <label for="s-referral">What partners get</label>
+      <textarea id="s-referral"></textarea>
+    </div>
+  </div>
+  <button class="btn primary" id="btn-save-settings">Save settings</button>
+</section>
+
+</div>
+<div id="toast"></div>
+
+<script>
+const MODEL_LABELS = {
+  "claude-opus-5-5": "Opus 5.5 · best",
+  "claude-sonnet-5-5": "Sonnet 5.5 · balanced",
+  "claude-haiku-5-5": "Haiku 5.5 · cheapest",
+};
+const STATUS = {
+  "NEEDS REVIEW": ["amber", "Needs review"], "READY": ["yellow", "Ready to send"],
+  "SENT": ["green", "Sent"], "SKIPPED": ["grey", "Skipped"], "ERROR": ["red", "Error"],
+};
+const S = { meta: null, prospects: [], drafts: [], found: [], findType: "client", draftFilter: "ALL", open: new Set(), job: null, lastFinished: 0 };
+
+// ---------- helpers
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = (u) => { u = String(u || "").trim(); if (!u) return ""; if (!/^https?:\/\//i.test(u)) u = "https://" + u; try { const x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : ""; } catch { return ""; } };
+const host = (u) => { try { return new URL(safeUrl(u)).hostname.replace(/^www\./, ""); } catch { return u; } };
+const money = (n) => "$" + (n || 0).toFixed(2);
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 2200); }
+async function api(path, body) {
+  const opt = body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json", "X-Outreach": "1" }, body: JSON.stringify(body) };
+  const r = await fetch(path, opt);
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || `Request failed (${r.status})`);
+  return data;
+}
+function linkedInUrl(p) { return "https://www.linkedin.com/search/results/people/?keywords=" + encodeURIComponent(`${p.company} ${p.contact_role || "owner"}`); }
+function linksHtml(p) {
+  const out = [];
+  const w = safeUrl(p.website), c = safeUrl(p.contact_page);
+  if (w) out.push(`<a href="${esc(w)}" target="_blank" rel="noopener">Website ↗</a>`);
+  if (c) out.push(`<a href="${esc(c)}" target="_blank" rel="noopener">Contact page ↗</a>`);
+  out.push(`<a href="${esc(linkedInUrl(p))}" target="_blank" rel="noopener">LinkedIn ↗</a>`);
+  return `<span class="links">${out.join("")}</span>`;
+}
+function statusPill(st) { if (!st) return `<span class="pill grey">Not drafted</span>`; const [c, l] = STATUS[st] || ["grey", st]; return `<span class="pill ${c}">${esc(l)}</span>`; }
+function typePill(t) { return t === "partner" ? `<span class="pill ink">Partner</span>` : `<span class="pill grey">Client</span>`; }
+
+// ---------- tabs
+function showTab(name) {
+  document.querySelectorAll(".tab").forEach((s) => s.classList.toggle("hidden", s.id !== "tab-" + name));
+  document.querySelectorAll("#nav button").forEach((b) => b.classList.toggle("on", b.dataset.tab === name));
+  try { localStorage.setItem("tab", name); } catch {}
+  window.scrollTo({ top: 0 });
+}
+$("nav").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) showTab(b.dataset.tab); });
+document.addEventListener("click", (e) => { const a = e.target.closest("[data-goto]"); if (a) { e.preventDefault(); showTab(a.dataset.goto); } });
+
+// ---------- meta / settings
+async function loadMeta() {
+  S.meta = await api("/api/meta");
+  const m = S.meta;
+  const kp = $("keypill");
+  kp.className = "pill " + (m.api_key ? "green" : "red");
+  kp.innerHTML = `<span class="dot"></span>${window.PRESENAIT_DEMO ? "Demo mode" : m.api_key ? "AI connected" : "Add API key"}`;
+  kp.style.cursor = m.api_key ? "default" : "pointer";
+  kp.onclick = m.api_key ? null : () => showTab("settings");
+  $("key-status").textContent = window.PRESENAIT_DEMO ? "Not needed in the demo. Download the app to use your own key." : m.api_key ? "A key is saved and ready to use." : "No key yet. The Find and Write buttons need one.";
+  $("spent").textContent = money(m.session_spend);
+  $("c-pending").textContent = m.pending;
+  $("w-pending").textContent = m.pending;
+  document.querySelectorAll(".model-select").forEach((sel) => {
+    if (!sel.options.length) sel.innerHTML = m.models.map((id) => `<option value="${id}">${esc(MODEL_LABELS[id] || id)}</option>`).join("");
+  });
+  const s = m.settings;
+  if (!S.settingsLoaded) {
+    $("f-model").value = $("w-model").value = $("s-model").value = s.model;
+    $("w-budget").value = $("s-budget").value = s.budget_usd;
+    $("s-name").value = s.sender_name; $("s-title").value = s.sender_title; $("s-email").value = s.sender_email;
+    $("s-searches").value = String(s.max_searches); $("s-effort").value = s.effort; $("s-referral").value = s.referral_offer;
+    S.settingsLoaded = true;
+  }
+  $("w-sender-warn").classList.toggle("hidden", !!(s.sender_name && s.sender_email));
+  // default run size: 5, or fewer if fewer are waiting (unless the user has typed their own number)
+  if (!S.limitTouched || Number($("w-limit").value) > m.pending) $("w-limit").value = Math.max(1, Math.min(5, m.pending || 1));
+  updateEstimates();
+}
+function updateEstimates() {
+  if (!S.meta) return;
+  const f = S.meta.est_find[$("f-model").value] || [0, 0];
+  $("find-est").textContent = `Estimated cost: ${money(f[0])}–${money(f[1])} per search`;
+  const n = Math.min(Number($("w-limit").value) || 0, S.meta.pending);
+  const d = S.meta.est_draft[$("w-model").value] || [0, 0];
+  $("w-est").textContent = n ? `Estimated ${money(d[0] * n)}–${money(d[1] * n)} for ${n} prospect${n > 1 ? "s" : ""}` : "Nothing waiting";
+  $("btn-run").disabled = !n || !S.meta.api_key || (S.job && S.job.running);
+  $("btn-find").disabled = !S.meta.api_key || (S.job && S.job.running);
+}
+["f-model", "w-model", "w-limit"].forEach((id) => $(id).addEventListener("input", updateEstimates));
+$("w-limit").addEventListener("input", () => (S.limitTouched = true));
+
+$("btn-save-settings").onclick = async () => {
+  await api("/api/settings", {
+    sender_name: $("s-name").value.trim(), sender_title: $("s-title").value.trim(), sender_email: $("s-email").value.trim(),
+    model: $("s-model").value, budget_usd: Number($("s-budget").value) || 5, max_searches: Number($("s-searches").value),
+    effort: $("s-effort").value, referral_offer: $("s-referral").value.trim(),
+  });
+  S.settingsLoaded = false; await loadMeta(); toast("Settings saved");
+};
+$("btn-save-key").onclick = async () => {
+  try { await api("/api/apikey", { key: $("s-key").value }); $("s-key").value = ""; await loadMeta(); toast("API key saved"); }
+  catch (e) { toast(e.message); }
+};
+$("btn-remove-key").onclick = async () => { if (!confirm("Remove the saved API key from this Mac?")) return; await api("/api/apikey", { key: "" }); await loadMeta(); toast("Key removed"); };
+
+// ---------- find
+$("find-type").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  S.findType = b.dataset.v;
+  document.querySelectorAll("#find-type button").forEach((x) => x.classList.toggle("on", x === b));
+  $("industry-box").style.visibility = S.findType === "partner" ? "hidden" : "visible";
+});
+$("btn-find").onclick = async () => {
+  try {
+    await api("/api/find", { type: S.findType, industry: $("f-industry").value.trim(), location: $("f-location").value.trim(), count: Number($("f-count").value), model: $("f-model").value });
+    pollSoon();
+  } catch (e) { toast(e.message); }
+};
+function renderFound() {
+  const rows = S.found;
+  $("find-results").classList.toggle("hidden", !rows.length);
+  $("found-count").textContent = rows.length ? `${rows.length} found` : "";
+  $("found-body").innerHTML = rows.map((r, i) => `
+    <tr>
+      <td><input type="checkbox" data-i="${i}" ${r.already ? "disabled" : "checked"}></td>
+      <td class="biz"><div class="name">${esc(r.company)}</div><div class="sub">${esc(host(r.website))}</div>${r.already ? '<span class="pill grey" style="margin-top:6px">Already in list</span>' : ""}</td>
+      <td>${esc(r.suburb_state)}</td>
+      <td style="white-space:nowrap">${esc(r.phone) || '<span class="muted">-</span>'}</td>
+      <td class="small">${esc(r.size_hint)}</td>
+      <td class="small">${esc(r.why_fit)}</td>
+      <td>${linksHtml(r)}</td>
+    </tr>`).join("");
+}
+$("btn-add-found").onclick = async () => {
+  const picked = [...document.querySelectorAll("#found-body input:checked")].map((c) => S.found[Number(c.dataset.i)]);
+  if (!picked.length) return toast("Tick at least one business");
+  const r = await api("/api/prospects/add", { rows: picked });
+  picked.forEach((p) => (p.already = true));
+  renderFound(); await refreshData();
+  toast(`Added ${r.added} to prospects${r.skipped ? ` (${r.skipped} already there)` : ""}`);
+};
+$("btn-clear-found").onclick = () => { S.found = []; renderFound(); };
+
+// ---------- prospects
+function renderProspects() {
+  const q = $("p-search").value.trim().toLowerCase();
+  const rows = S.prospects.filter((p) => !q || JSON.stringify(p).toLowerCase().includes(q));
+  $("c-prospects").textContent = S.prospects.length;
+  if (!S.prospects.length) {
+    $("p-body").innerHTML = `<tr><td colspan="8" class="empty">No prospects yet. Use <a href="#" data-goto="find">Find businesses</a> or add one manually.</td></tr>`;
+    return;
+  }
+  $("p-body").innerHTML = rows.map((p) => `
+    <tr data-key="${esc(p.key)}">
+      <td>${typePill(p.type)}</td>
+      <td class="biz"><div class="name">${esc(p.company)}</div><div class="sub">${esc([p.suburb_state, p.industry].filter(Boolean).join(" · "))}</div>${p.size_hint ? `<div class="sub clamp" title="${esc(p.size_hint)}">${esc(p.size_hint)}</div>` : ""}</td>
+      <td><input type="text" data-f="contact_name" value="${esc(p.contact_name)}" placeholder="Name"><div style="height:6px"></div><input type="text" data-f="contact_role" value="${esc(p.contact_role)}" placeholder="Role"></td>
+      <td><input type="email" data-f="email" value="${esc(p.email)}" placeholder="From their contact page"></td>
+      <td><input type="text" data-f="phone" value="${esc(p.phone)}" placeholder="Phone" style="min-width:130px"></td>
+      <td>${linksHtml(p)}</td>
+      <td>${statusPill(p.draft_status)}</td>
+      <td><button class="x" title="Remove" data-del="${esc(p.key)}">×</button></td>
+    </tr>`).join("") || `<tr><td colspan="8" class="empty">No matches.</td></tr>`;
+}
+$("p-search").addEventListener("input", renderProspects);
+$("p-body").addEventListener("change", async (e) => {
+  const inp = e.target.closest("input[data-f]"); if (!inp) return;
+  const key = inp.closest("tr").dataset.key;
+  try { await api("/api/prospects/update", { key, fields: { [inp.dataset.f]: inp.value } }); const p = S.prospects.find((x) => x.key === key); if (p) p[inp.dataset.f] = inp.value; toast("Saved"); }
+  catch (err) { toast(err.message); }
+});
+$("p-body").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-del]"); if (!b) return;
+  const p = S.prospects.find((x) => x.key === b.dataset.del);
+  if (!confirm(`Remove ${p ? p.company : "this business"} from your prospects? Its draft (if any) stays in Drafts.`)) return;
+  await api("/api/prospects/delete", { keys: [b.dataset.del] }); await refreshData(); toast("Removed");
+});
+$("btn-show-add").onclick = () => $("add-form").classList.toggle("hidden");
+$("btn-cancel-add").onclick = () => $("add-form").classList.add("hidden");
+$("btn-add-one").onclick = async () => {
+  const row = { company: $("a-company").value.trim(), website: $("a-website").value.trim(), suburb_state: $("a-suburb").value.trim(),
+    industry: $("a-industry").value.trim(), contact_name: $("a-name").value.trim(), contact_role: $("a-role").value.trim(),
+    email: $("a-email").value.trim(), phone: $("a-phone").value.trim(), type: $("a-type").value, source: "added by hand" };
+  if (!row.company) return toast("Business name is required");
+  const r = await api("/api/prospects/add", { rows: [row] });
+  if (!r.added) return toast("That business is already in your list");
+  ["a-company", "a-website", "a-suburb", "a-industry", "a-name", "a-role", "a-email", "a-phone"].forEach((id) => ($(id).value = ""));
+  $("add-form").classList.add("hidden"); await refreshData(); toast("Added");
+};
+
+// ---------- write
+$("btn-run").onclick = async () => {
+  try { await api("/api/run", { limit: Number($("w-limit").value), budget_usd: Number($("w-budget").value), model: $("w-model").value }); pollSoon(); }
+  catch (e) { toast(e.message); }
+};
+$("btn-stop").onclick = () => api("/api/stop", {});
+
+// ---------- drafts
+function renderDrafts() {
+  const counts = { ALL: S.drafts.length };
+  S.drafts.forEach((d) => (counts[d.status] = (counts[d.status] || 0) + 1));
+  $("c-drafts").textContent = S.drafts.filter((d) => d.status !== "ERROR").length;
+  const chips = [["ALL", "All"], ...Object.entries(STATUS).map(([k, v]) => [k, v[1]])];
+  $("d-chips").innerHTML = chips.map(([k, l]) => `<button class="chip ${S.draftFilter === k ? "on" : ""}" data-f="${k}">${esc(l)} ${counts[k] || 0}</button>`).join("");
+  const q = $("d-search").value.trim().toLowerCase();
+  const list = S.drafts.filter((d) => (S.draftFilter === "ALL" || d.status === S.draftFilter) && (!q || JSON.stringify(d).toLowerCase().includes(q)));
+  if (!S.drafts.length) { $("d-list").innerHTML = `<div class="card empty">No drafts yet. Add prospects, then <a href="#" data-goto="write">write drafts</a>.</div>`; return; }
+  if (!list.length) { $("d-list").innerHTML = `<div class="card empty">Nothing here.</div>`; return; }
+  $("d-list").innerHTML = list.map(draftCard).join("");
+}
+function draftCard(d) {
+  const open = S.open.has(d.key);
+  const fit = Number(d.fit_score) || 0;
+  const head = `
+    <div class="dhead" data-toggle="${esc(d.key)}">
+      <h3>${esc(d.company)}</h3>${typePill(d.type)}
+      ${d.status !== "ERROR" ? `<span class="fit" title="Fit ${fit}/5">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= fit ? "on" : ""}"></i>`).join("")}</span>` : ""}
+      ${d.price_estimate ? `<span class="pill grey">${esc(d.price_estimate)}</span>` : ""}
+      ${statusPill(d.status)}
+      ${!open && d.email_subject ? `<span class="muted small">${esc(d.email_subject)}</span>` : ""}
+      <span class="chev">▾</span>
+    </div>`;
+  if (!open) return `<div class="card draft">${head}</div>`;
+  if (d.status === "ERROR") {
+    return `<div class="card draft open">${head}<div class="dbody" style="grid-template-columns:1fr">
+      <div class="note">${esc(d.error || "Something went wrong.")}</div>
+      <div class="row"><button class="btn primary small" data-redo="${esc(d.key)}">Try again on the next run</button><span class="muted small">It will be redone the next time you click Write drafts.</span></div></div></div>`;
+  }
+  const to = [d.contact_name, d.contact_role].filter(Boolean).join(", ");
+  const mail = d.email ? `mailto:${encodeURIComponent(d.email)}?subject=${encodeURIComponent(d.email_subject || "")}&body=${encodeURIComponent(d.email_body || "")}` : "";
+  const ta = (f, label, rows, copyLabel) => `
+    <div class="field"><div class="row"><label>${label}</label><button class="btn ghost small" data-copy="${f}">${copyLabel || "Copy"}</button></div>
+    <textarea data-f="${f}" rows="${rows}">${esc(d[f])}</textarea>${f === "linkedin_message" ? `<div class="muted small" data-count>${(d[f] || "").length} characters</div>` : ""}</div>`;
+  return `<div class="card draft open" data-key="${esc(d.key)}">${head}
+    <div class="dbody">
+      <div class="facts">
+        <h4>To</h4><p>${esc(to || "No contact name yet")}<br>${d.email ? esc(d.email) : '<span class="pill amber" style="margin-top:4px">No email yet: add it in Prospects</span>'}${d.phone ? `<br>${esc(d.phone)}` : ""}</p>
+        <p>${linksHtml(d)}</p>
+        <h4>Why it fits</h4><p>${esc(d.fit_reason)}</p>
+        <h4>Likely problem</h4><p>${esc(d.attendance_pain)}</p>
+        <h4>About them</h4><p>${esc(d.business_summary)}</p>
+        <details><summary>Research notes and sources</summary><pre>${esc(d.research_notes)}</pre></details>
+        <div class="field" style="margin-top:18px"><label>Status</label>
+          <select data-status>${Object.entries(STATUS).filter(([k]) => k !== "ERROR").map(([k, v]) => `<option value="${k}" ${d.status === k ? "selected" : ""}>${v[1]}</option>`).join("")}</select></div>
+      </div>
+      <div>
+        <div class="field"><div class="row"><label>Email subject</label><button class="btn ghost small" data-copy="email_subject">Copy</button></div><input type="text" data-f="email_subject" value="${esc(d.email_subject)}"></div>
+        ${ta("email_body", "Email", 15, "Copy email")}
+        ${ta("follow_up_email", "Follow-up (send about 4 days later)", 7)}
+        ${ta("linkedin_message", "LinkedIn message", 3)}
+        ${ta("call_opener", "Phone opener", 3)}
+        <div class="row">
+          <button class="btn dark small" data-save>Save changes</button>
+          <a class="btn primary small ${mail ? "" : "disabled"}" href="${mail ? esc(mail) : "#"}" title="Opens your mail app with this draft. You still press send.">Open in Mail</a>
+          <button class="btn green small" data-mark="SENT">Mark as sent</button>
+          <button class="btn ghost small" data-redo="${esc(d.key)}">Redo draft</button>
+        </div>
+      </div>
+    </div></div>`;
+}
+$("d-chips").addEventListener("click", (e) => { const c = e.target.closest("[data-f]"); if (c) { S.draftFilter = c.dataset.f; renderDrafts(); } });
+$("d-search").addEventListener("input", renderDrafts);
+$("d-list").addEventListener("click", async (e) => {
+  const tog = e.target.closest("[data-toggle]");
+  if (tog && !e.target.closest("a,button,select,input,textarea")) { const k = tog.dataset.toggle; S.open.has(k) ? S.open.delete(k) : S.open.add(k); renderDrafts(); return; }
+  const card = e.target.closest(".draft[data-key]");
+  const redo = e.target.closest("[data-redo]");
+  if (redo) { await api("/api/drafts/redo", { key: redo.dataset.redo }); await refreshData(); toast("Will be redrafted on the next run"); return; }
+  if (!card) return;
+  const key = card.dataset.key, d = S.drafts.find((x) => x.key === key);
+  const copy = e.target.closest("[data-copy]");
+  if (copy) {
+    const f = copy.dataset.copy; let text = card.querySelector(`[data-f="${f}"]`).value;
+    if (f === "email_body") text = `Subject: ${card.querySelector('[data-f="email_subject"]').value}\n\n${text}`;
+    await navigator.clipboard.writeText(text); toast("Copied"); return;
+  }
+  if (e.target.closest("[data-save]")) {
+    const fields = {}; card.querySelectorAll("[data-f]").forEach((el) => (fields[el.dataset.f] = el.value));
+    if (d.status === "NEEDS REVIEW") fields.status = "READY";
+    await api("/api/drafts/update", { key, fields }); await refreshData(); toast("Saved"); return;
+  }
+  const mark = e.target.closest("[data-mark]");
+  if (mark) { await api("/api/drafts/update", { key, fields: { status: mark.dataset.mark } }); S.open.delete(key); await refreshData(); toast("Marked as sent"); }
+});
+$("d-list").addEventListener("change", async (e) => {
+  const sel = e.target.closest("[data-status]"); if (!sel) return;
+  const key = sel.closest(".draft").dataset.key;
+  await api("/api/drafts/update", { key, fields: { status: sel.value } }); await refreshData(); toast("Status updated");
+});
+$("d-list").addEventListener("input", (e) => {
+  if (e.target.dataset.f === "linkedin_message") { const c = e.target.parentElement.querySelector("[data-count]"); if (c) c.textContent = `${e.target.value.length} characters`; }
+});
+
+// ---------- job polling
+let pollTimer = null;
+function pollSoon() { clearTimeout(pollTimer); pollTimer = setTimeout(poll, 300); }
+async function poll() {
+  let j;
+  try { j = await api("/api/job"); } catch { pollTimer = setTimeout(poll, 3000); return; }
+  S.job = j;
+  $("spent").textContent = money(j.session_spend);
+  const isFind = j.kind === "find", isDraft = j.kind === "draft";
+  $("find-job").classList.toggle("hidden", !isFind || (!j.running && !j.error));
+  $("w-job").classList.toggle("hidden", !isDraft);
+  const logHtml = esc(j.log.join("\n"));
+  if (isFind) {
+    $("find-log").innerHTML = logHtml; $("find-spin").classList.toggle("hidden", !j.running);
+    $("find-status").textContent = j.running ? "Searching the web..." : (j.error ? "Search failed" : "Done");
+    $("find-spend").textContent = `Spend ${money(j.spend)}`;
+    if (!j.running && j.finished_at !== S.lastFinished) { S.found = j.found || []; renderFound(); if (j.error) toast(j.error); }
+  }
+  if (isDraft) {
+    $("w-log").innerHTML = logHtml; $("w-log").scrollTop = 1e9; $("w-spin").classList.toggle("hidden", !j.running);
+    const [done, total] = j.progress; $("w-bar").style.width = total ? `${Math.round((done / total) * 100)}%` : "0%";
+    $("w-status").textContent = j.running ? `Working... ${done} of ${total} done` : (j.error ? "Stopped with an error" : `Finished: ${done} of ${total} done`);
+    $("w-spend").textContent = `This run ${money(j.spend)}`;
+    $("btn-stop").classList.toggle("hidden", !j.running); $("btn-run").classList.toggle("hidden", j.running);
+  }
+  if (!j.running && j.finished_at !== S.lastFinished) { S.lastFinished = j.finished_at; await refreshData(); }
+  updateEstimates();
+  if (j.running) pollTimer = setTimeout(poll, 1000); else if (isDraft) await refreshData(false);
+}
+
+// ---------- data
+async function refreshData(withMeta = true) {
+  const [p, d] = await Promise.all([api("/api/prospects"), api("/api/drafts")]);
+  S.prospects = p; S.drafts = d;
+  renderProspects(); renderDrafts();
+  if (withMeta) await loadMeta();
+}
+
+(async function init() {
+  let tab = "find"; try { tab = localStorage.getItem("tab") || "find"; } catch {}
+  showTab(tab);
+  await refreshData();
+  poll();
+})();
+</script>
+</body>
+</html>

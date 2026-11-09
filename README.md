@@ -6,6 +6,10 @@ PresenAIT **attendance tracking**. It also handles **shopping centre partners**
 
 **It never sends anything.** You check every draft and send it yourself.
 
+**See the dashboard first:** [live demo with sample data](https://addybahl.github.io/presenait-outreach/)
+(nothing real happens in the demo). To use it for real, download the
+[latest release](https://github.com/AddyBahl/presenait-outreach/releases/latest) and follow the steps below.
+
 ## 1. Set up (once)
 
 You need **Python 3.10 or newer** (python.org/downloads). Open Terminal (Mac) or
