@@ -1,0 +1,11 @@
+# Secrets and local data - never share or upload these
+.env
+settings.json
+output/
+.venv/
+__pycache__/
+
+# Editor and Mac clutter
+.vscode/
+.idea/
+.DS_Store
